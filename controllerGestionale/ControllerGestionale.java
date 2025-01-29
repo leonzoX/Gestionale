@@ -3,10 +3,12 @@ package controllerGestionale;
 import modelGestionale.*;
 import java.util.*;
 import java.io.*;
+import java.util.stream.Collectors;
 
 public class ControllerGestionale{
 
 	private List<ModelCliente> clienti;
+	private ArrayList<String> stringClienti;
 	private  String dataFile = "datiClienti";
 
 	public ControllerGestionale(){
@@ -15,7 +17,9 @@ public class ControllerGestionale{
 		this.dataFile = path+"/"+this.dataFile;
 
 		this.clienti = loadClienti();
+		this.stringClienti = toString(this.clienti);
 		if(this.clienti == null) this.clienti = new ArrayList<ModelCliente>();
+
 
 	}
 
@@ -23,6 +27,7 @@ public class ControllerGestionale{
 		
 
 		this.clienti.add(cliente);
+		this.stringClienti.add(cliente.toString());
 
 		saveClienti(this.clienti);
 		this.clienti = loadClienti();
@@ -33,7 +38,7 @@ public class ControllerGestionale{
 
 		if(this.clienti.remove(cliente) == false)	
 			System.out.println("cliente non trovato ");
-		
+		this.stringClienti.remove(cliente.toString());
 
 		saveClienti(this.clienti);
 		this.clienti = loadClienti();
@@ -46,6 +51,7 @@ public class ControllerGestionale{
 			this.clienti.set(index,newCl);
 			saveClienti(this.clienti);
 			this.clienti = loadClienti();
+			this.stringClienti = toString(this.clienti);
 		}else{
 			System.out.println("cliente non trovato");
 		}
@@ -55,6 +61,7 @@ public class ControllerGestionale{
 	public List<ModelCliente> loadClienti(){
 
 		ArrayList<ModelCliente> clienti = null;
+
 
 		try (FileInputStream file = new FileInputStream(this.dataFile);
     		ObjectInputStream input = new ObjectInputStream(file);) {
@@ -67,6 +74,8 @@ public class ControllerGestionale{
   			System.out.println("Class not found");
   			exc.printStackTrace();
 		}
+
+
 
 		return clienti;
 
@@ -93,6 +102,18 @@ public class ControllerGestionale{
 
 	public List<ModelCliente> getClienti(){
 		return this.clienti;
+	}
+
+	public ArrayList<String> getStringClienti(){return this.stringClienti;}
+
+	private ArrayList<String> toString(List<ModelCliente> clienti){
+		ArrayList<String> stringClienti = new ArrayList<String>();
+
+		for(ModelCliente cliente : clienti){
+			stringClienti.add(cliente.toString());
+		}
+
+		return stringClienti;
 	}
 
 

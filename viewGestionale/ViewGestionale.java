@@ -1,24 +1,42 @@
 package viewGestionale;
 import controllerGestionale.*;
+import modelGestionale.ModelCliente;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.*;
-import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
-import java.awt.*;
+import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 public class ViewGestionale extends JFrame implements ActionListener{
 	private JPanel listaClienti;
-    AutoCompleteDecorator decorator;
-    JTextField txtField;
+
+    private PlaceholderTextField txtField;
+    private ArrayList<String> nomiClienti;
+    private ControllerGestionale gestionale;
 
 	public ViewGestionale(String title,int width,int height){
         super(title);
         setLayout(new GridBagLayout());
 
-        txtField = new JTextField();
+        gestionale = new ControllerGestionale();
+
+        nomiClienti= gestionale.getStringClienti();
+
+
+        txtField = new PlaceholderTextField();
+        txtField.setColumns(20);
+        txtField.setPlaceholder("Ricerca clienti");
+        final Font f = txtField.getFont();
+        txtField.setFont(new Font(f.getName(), f.getStyle(), 20));
+
 
         GridBagConstraints c = new GridBagConstraints();
+
+        AutoSuggestor autoSuggestor = new AutoSuggestor(txtField, this, nomiClienti, Color.WHITE.brighter(), Color.BLUE, Color.RED, 0.75f) ;
+
 
         JButton b1 = new JButton("bottone 1");
         JButton b2 = new JButton("bottone 2");
@@ -32,17 +50,19 @@ public class ViewGestionale extends JFrame implements ActionListener{
         JButton b10 = new JButton("bottone 10");
 
 
+        label = new JLabel("Ricerca clienti ");
         c.insets = new Insets(0,0,20,0);
         c.weightx = 0.5;
         c.gridx = 0;
         c.gridy = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
-        this.add(b1,c);
+        this.add(label,c);
 
         
         c.weightx = 0.5;
         c.gridx = 1;
         c.gridy = 0;
+        c.ipady = 20;
         c.fill = GridBagConstraints.HORIZONTAL;
         this.add(txtField,c);
 
@@ -50,7 +70,7 @@ public class ViewGestionale extends JFrame implements ActionListener{
         c.weightx = 0.5;
         c.gridx = 2;
         c.gridy = 0;
-
+        c.ipady = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
         this.add(b3,c);
 

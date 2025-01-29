@@ -6,6 +6,8 @@ import modelGestionale.ModelCliente;
 
 public class ModelGestionale{
 	private List<ModelCliente> clienti;
+
+
 	private final String dataFile = "Gestionale/modelGestionale/datiClienti";
 
 	public ModelGestionale(){}
