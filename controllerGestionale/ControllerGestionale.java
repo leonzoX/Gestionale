@@ -1,24 +1,26 @@
 package controllerGestionale;
 
 import modelGestionale.*;
+
+import javax.swing.*;
 import java.util.*;
 import java.io.*;
 import java.util.stream.Collectors;
 
 public class ControllerGestionale{
 
-	private List<ModelCliente> clienti;
-	private ArrayList<String> stringClienti;
+	private HashMap<String,ModelCliente> clienti;
+	private DefaultListModel listModel;
+
 	private  String dataFile = "datiClienti";
 
 	public ControllerGestionale(){
 		String path = new File("modelGestionale").getAbsolutePath();
 		System.out.println(path);
 		this.dataFile = path+"/"+this.dataFile;
-
+		listModel = new DefaultListModel();
 		this.clienti = loadClienti();
-		this.stringClienti = toString(this.clienti);
-		if(this.clienti == null) this.clienti = new ArrayList<ModelCliente>();
+		if(this.clienti == null) this.clienti = new HashMap<String,ModelCliente>();
 
 
 	}
@@ -26,8 +28,9 @@ public class ControllerGestionale{
 	public void insertCliente(ModelCliente cliente){
 		
 
-		this.clienti.add(cliente);
-		this.stringClienti.add(cliente.toString());
+		this.clienti.put(cliente.toString(),cliente);
+		this.listModel.addElement(cliente.toString());
+
 
 		saveClienti(this.clienti);
 		this.clienti = loadClienti();
@@ -36,9 +39,9 @@ public class ControllerGestionale{
 
 	public void removeCliente(ModelCliente cliente){
 
-		if(this.clienti.remove(cliente) == false)	
-			System.out.println("cliente non trovato ");
-		this.stringClienti.remove(cliente.toString());
+		this.listModel.removeElement(cliente.toString());
+		this.clienti.remove(cliente.toString());
+
 
 		saveClienti(this.clienti);
 		this.clienti = loadClienti();
@@ -46,33 +49,42 @@ public class ControllerGestionale{
 	}
 
 	public void modifyCliente(ModelCliente oldCl,ModelCliente newCl){
-		int index = this.clienti.indexOf(oldCl);
-		if(index != -1){
-			this.clienti.set(index,newCl);
+
+		if(this.clienti.containsKey(oldCl.toString())){
+			this.listModel.removeElement(oldCl.toString());
+			this.clienti.remove(oldCl.toString());
+
+			this.clienti.put(newCl.toString(),newCl);
+			this.listModel.addElement(newCl.toString());
+
 			saveClienti(this.clienti);
 			this.clienti = loadClienti();
-			this.stringClienti = toString(this.clienti);
+
 		}else{
 			System.out.println("cliente non trovato");
 		}
 
 	}
 
-	public List<ModelCliente> loadClienti(){
+	public HashMap<String,ModelCliente> loadClienti(){
 
-		ArrayList<ModelCliente> clienti = null;
+		HashMap<String,ModelCliente> clienti = null;
 
 
 		try (FileInputStream file = new FileInputStream(this.dataFile);
     		ObjectInputStream input = new ObjectInputStream(file);) {
 
-  			clienti = (ArrayList) input.readObject();
+  			clienti = (HashMap<String,ModelCliente>) input.readObject();
 
 		} catch (IOException ioe) {
   			ioe.printStackTrace();
 		} catch (ClassNotFoundException exc) {
   			System.out.println("Class not found");
   			exc.printStackTrace();
+		}
+		Set<String> s = clienti.keySet();
+		for(String element : s){
+			this.listModel.addElement(element.toString());
 		}
 
 
@@ -82,7 +94,7 @@ public class ControllerGestionale{
 
 	}
 
-	public void saveClienti(List<ModelCliente> clienti){
+	public void saveClienti(HashMap<String,ModelCliente> clienti){
 
 		try(FileOutputStream file = new FileOutputStream(this.dataFile);
 			ObjectOutputStream output = new ObjectOutputStream(file)){
@@ -100,21 +112,21 @@ public class ControllerGestionale{
 
 	}
 
-	public List<ModelCliente> getClienti(){
+	public HashMap<String,ModelCliente> getClienti(){
 		return this.clienti;
 	}
 
-	public ArrayList<String> getStringClienti(){return this.stringClienti;}
+	public ArrayList<String> getStringClienti(){
+		ArrayList<String> retVal = new ArrayList<String>();
+		retVal.addAll(this.clienti.keySet());
 
-	private ArrayList<String> toString(List<ModelCliente> clienti){
-		ArrayList<String> stringClienti = new ArrayList<String>();
-
-		for(ModelCliente cliente : clienti){
-			stringClienti.add(cliente.toString());
-		}
-
-		return stringClienti;
+		return retVal;
 	}
+
+	public DefaultListModel getListModel(){
+		return this.listModel;
+	}
+
 
 
 

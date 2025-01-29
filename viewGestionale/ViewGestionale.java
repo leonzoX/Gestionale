@@ -11,7 +11,8 @@ import java.util.stream.Collectors;
 
 
 public class ViewGestionale extends JFrame implements ActionListener{
-	private JPanel listaClienti;
+	private JList listaClienti;
+
 
     private PlaceholderTextField txtField;
     private ArrayList<String> nomiClienti;
@@ -21,10 +22,11 @@ public class ViewGestionale extends JFrame implements ActionListener{
         super(title);
         setLayout(new GridBagLayout());
 
+
         gestionale = new ControllerGestionale();
 
-        nomiClienti= gestionale.getStringClienti();
 
+        nomiClienti= gestionale.getStringClienti();
 
         txtField = new PlaceholderTextField();
         txtField.setColumns(20);
@@ -32,6 +34,12 @@ public class ViewGestionale extends JFrame implements ActionListener{
         final Font f = txtField.getFont();
         txtField.setFont(new Font(f.getName(), f.getStyle(), 20));
 
+        listaClienti = new JList(gestionale.getStringClienti().toArray());
+        listaClienti.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        listaClienti.setLayoutOrientation(JList.VERTICAL_WRAP);
+        listaClienti.setVisibleRowCount(-1);
+        JScrollPane listScroller = new JScrollPane(listaClienti);
+        //listScroller.setPreferredSize(new Dimension(250, 80));
 
         GridBagConstraints c = new GridBagConstraints();
 
@@ -50,13 +58,7 @@ public class ViewGestionale extends JFrame implements ActionListener{
         JButton b10 = new JButton("bottone 10");
 
 
-        label = new JLabel("Ricerca clienti ");
-        c.insets = new Insets(0,0,20,0);
-        c.weightx = 0.5;
-        c.gridx = 0;
-        c.gridy = 0;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        this.add(label,c);
+
 
         
         c.weightx = 0.5;
@@ -67,13 +69,7 @@ public class ViewGestionale extends JFrame implements ActionListener{
         this.add(txtField,c);
 
         
-        c.weightx = 0.5;
-        c.gridx = 2;
-        c.gridy = 0;
-        c.ipady = 0;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        this.add(b3,c);
-
+       
        
 
 
@@ -85,12 +81,12 @@ public class ViewGestionale extends JFrame implements ActionListener{
         c.ipady = 40;
         c.ipadx = 100;
         c.fill = GridBagConstraints.BOTH;
-        c.gridwidth = 3;
+        c.gridwidth = 2;
         c.anchor = GridBagConstraints.LINE_START;
 
 
 
-        this.add(b6,c);
+        this.add(listaClienti,c);
 
  		
  		

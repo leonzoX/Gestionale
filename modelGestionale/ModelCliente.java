@@ -74,7 +74,7 @@ public class ModelCliente implements Serializable{
 
 	@Override
 	public String toString() {
-		return nome +" "+cognome+" "+telefono;
+		return nome +" "+cognome;
 
 	}
 }
